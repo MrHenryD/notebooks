@@ -1,6 +1,6 @@
-# MLflow & Feast Feature Store Environment
+# notebooks
 
-This repository provides a reproducible environment for machine learning experiment tracking with [MLflow](https://mlflow.org/) and feature engineering using [Feast](https://feast.dev/), orchestrated via Docker Compose.
+This repository provides a collection of notebooks for common data science / data engineering tasks.
 
 ## Project Structure
 
