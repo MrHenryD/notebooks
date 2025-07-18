@@ -1,0 +1,50 @@
+version: "3.8"
+services:
+  mlflow-backend:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mlflow
+    healthcheck:
+      test: [
+        "CMD-SHELL",
+        "pg_isready -U admin -d mlflow"
+      ]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+  mlflow-server:
+    build:
+      context: images
+      dockerfile: Dockerfile.mlflow
+      args:
+        PYTHON_VERSION: "3.12"
+        MLFLOW_VERSION: "3.1.2"
+        EXTRA_PIP_PACKAGES: "psycopg2-binary==2.9.10"
+    ports:
+      - "5555:5000"
+    command: [
+      "--host", "0.0.0.0",
+      "--port", "5000",
+      "--backend-store-uri", "postgresql+psycopg2://admin:password@mlflow-backend:5432/mlflow",
+      "--default-artifact-root", "file:/./mlruns",
+    ]
+    depends_on:
+      mlflow-backend:
+        condition: service_healthy
+    restart: always
+
+  notebook:
+    build:
+      context: images
+      dockerfile: Dockerfile.jupyter
+      args:
+        EXTRA_PIP_PACKAGES: "feast"
+    ports:
+      - "9999:8888"
+    volumes:
+      - ./notebooks:/home/jovyan/work
+    restart: always

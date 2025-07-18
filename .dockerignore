@@ -1,0 +1,15 @@
+# Mac
+**/.DS_Store
+
+# Cache
+**/__pycache__
+
+# Env
+**/env/
+**/venv/
+
+# IDE
+**/.vs_code
+
+# Static
+**/data
